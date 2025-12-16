@@ -1,42 +1,38 @@
 import os
-import stripe  # <-- MOVE TO TOP
+import stripe
 import requests, json, io
 from flask import Flask, request, render_template, send_file, jsonify
 
 app = Flask(__name__)
 
-# ===== KEYS (Render will inject these) =====
-OPENAI_KEY = os.getenv("OPENAI_KEY")
-PDFCO_KEY = os.getenv("PDFCO_KEY")
-STRIPE_SECRET = os.getenv("STRIPE_SECRET")
-PRICE_ID = "price_1SezD3QqfvtCQZDRvXvitWNi"  # <-- CHANGE THIS TO YOUR REAL PRICE ID
+# ===== KEYS FROM RENDER ENVIRONMENT =====
+OPENAI_KEY = os.environ.get("OPENAI_KEY")
+PDFCO_KEY = os.environ.get("PDFCO_KEY")
+STRIPE_SECRET = os.environ.get("STRIPE_SECRET")
+STRIPE_PUBLISHABLE = os.environ.get("STRIPE_PUBLISHABLE")
+PRICE_ID = os.environ.get("PRICE_ID")  # <-- Now loaded from env
 
-# Initialize Stripe once at startup
+# Initialize Stripe
 stripe.api_key = STRIPE_SECRET
 
-# ===== HOME PAGE =====
 @app.route("/")
 def home():
-    return render_template("index.html", stripe_pk=os.getenv("STRIPE_PUBLISHABLE"))
+    return render_template("index.html", stripe_pk=STRIPE_PUBLISHABLE)
 
-# ===== STRIPE CHECKOUT SESSION =====
 @app.route("/create-checkout", methods=["POST"])
 def create_checkout():
-    # REMOVE the 'import stripe' line from here
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
-        line_items=[{'price': PRICE_ID, 'quantity': 1}],
+        line_items=[{"price": PRICE_ID, "quantity": 1}],
         mode='payment',
         success_url=request.host_url + "?session_id={CHECKOUT_SESSION_ID}",
         cancel_url=request.host_url
     )
     return jsonify(sessionId=session.id)
 
-# ===== FILL PDF =====
 @app.route("/fill", methods=["POST"])
 def fill_w9():
     data = request.json
-    # 1. Call GPT-4o-mini
     prompt = f"""You are a W-9 formatting robot. Return ONLY raw JSON.
 Keys: name, business_name, address, city_state_zip, ssn, ein, llc_checked (boolean).
 Rules: SSN xxx-xx-xxxx, EIN xx-xxxxxxx, ALL CAPS.
@@ -49,7 +45,6 @@ Profile: {data}"""
     )
     fields = json.loads(openai_resp.json()['choices'][0]['message']['content'])
 
-    # 2. Fill PDF with PDF.co
     pdfco_payload = {
         "async": False,
         "name": "w9_filled",
