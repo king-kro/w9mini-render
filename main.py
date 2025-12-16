@@ -1,5 +1,7 @@
+import os
+import stripe  # <-- MOVE TO TOP
+import requests, json, io
 from flask import Flask, request, render_template, send_file, jsonify
-import requests, json, io, os
 
 app = Flask(__name__)
 
@@ -7,7 +9,10 @@ app = Flask(__name__)
 OPENAI_KEY = os.getenv("OPENAI_KEY")
 PDFCO_KEY = os.getenv("PDFCO_KEY")
 STRIPE_SECRET = os.getenv("STRIPE_SECRET")
-PRICE_ID = "price_1Q..."  # <--- PASTE YOUR REAL PRICE ID
+PRICE_ID = "YOUR_PRICE_ID"  # <-- CHANGE THIS TO YOUR REAL PRICE ID
+
+# Initialize Stripe once at startup
+stripe.api_key = STRIPE_SECRET
 
 # ===== HOME PAGE =====
 @app.route("/")
@@ -17,14 +22,10 @@ def home():
 # ===== STRIPE CHECKOUT SESSION =====
 @app.route("/create-checkout", methods=["POST"])
 def create_checkout():
-    import stripe
-    stripe.api_key = STRIPE_SECRET
+    # REMOVE the 'import stripe' line from here
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
-        line_items=[{
-            'price': PRICE_ID,
-            'quantity': 1
-        }],
+        line_items=[{'price': PRICE_ID, 'quantity': 1}],
         mode='payment',
         success_url=request.host_url + "?session_id={CHECKOUT_SESSION_ID}",
         cancel_url=request.host_url
