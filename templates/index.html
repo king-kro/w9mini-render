@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>W-9 Auto-Fill</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:system-ui,sans-serif;margin:0;padding:2rem;background:#f7f7f7}
+    h1{margin-bottom:.5rem}
+    .grid{display:grid;gap:1rem;max-width:500px}
+    input,select,button{width:100%;padding:.6rem;font-size:1rem}
+    button{background:#111;color:#fff;border:0;cursor:pointer}
+  </style>
+</head>
+<body>
+  <h1>30-Second W-9 Generator</h1>
+  <form id="w9form" class="grid">
+    <input name="name" placeholder="Legal name (as on tax return)" required>
+    <input name="business" placeholder="Business name (leave blank if none)">
+    <input name="address" placeholder="Street address" required>
+    <input name="csz" placeholder="City, State ZIP" required>
+    <input name="ssn" placeholder="SSN 123-45-6789" required>
+    <input name="ein" placeholder="EIN (leave blank if none)">
+    <select name="llc">
+      <option value="no">Not an LLC</option>
+      <option value="yes">LLC taxed as partnership/disregarded</option>
+    </select>
+    <button type="submit">Generate & Download ($5)</button>
+  </form>
+
+  <script src="https://js.stripe.com/v3/"></script>
+  <script>
+    const stripe = Stripe(pk_test_51SeyYsQqfvtCQZDRNXpwXaNbViCALqy9Z6unfifpp8ybSgkngzjYxGLypQF8d1ol3Og1EbnTKuknbj7GvnWosEJB00T6xe6CeO); // <--- CHANGE THIS IN STEP 12
+    const form = document.getElementById('w9form');
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const {sessionId} = await fetch("/create-checkout", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({})
+      }).then(r=>r.json());
+      await stripe.redirectToCheckout({sessionId});
+    });
+  </script>
+</body>
+</html>
