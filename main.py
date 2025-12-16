@@ -7,7 +7,7 @@ app = Flask(__name__)
 OPENAI_KEY = os.getenv("OPENAI_KEY")
 PDFCO_KEY = os.getenv("PDFCO_KEY")
 STRIPE_SECRET = os.getenv("STRIPE_SECRET")
-PRICE_ID = "YOUR_PRICE_ID" # <--- CHANGE THIS IN STEP 13
+PRICE_ID = pk_test_51SeyYsQqfvtCQZDRNXpwXaNbViCALqy9Z6unfifpp8ybSgkngzjYxGLypQF8d1ol3Og1EbnTKuknbj7GvnWosEJB00T6xe6CeO # <--- CHANGE THIS IN STEP 13
 
 # ===== HOME PAGE =====
 @app.route("/")
