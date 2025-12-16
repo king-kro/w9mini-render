@@ -70,5 +70,15 @@ Profile: {data}"""
 
     return send_file(io.BytesIO(download.content), as_attachment=True, download_name="w9_filled.pdf")
 
+@app.route("/debug")
+def debug():
+    return jsonify({
+        "price_id_set": PRICE_ID is not None,
+        "price_id_value": PRICE_ID,
+        "stripe_secret_set": STRIPE_SECRET is not None,
+        "openai_key_set": OPENAI_KEY is not None,
+        "pdfco_key_set": PDFCO_KEY is not None
+    })
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
