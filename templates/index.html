@@ -30,7 +30,7 @@
 
   <script src="https://js.stripe.com/v3/"></script>
   <script>
-    const stripe = Stripe(pk_test_51SeyYsQqfvtCQZDRNXpwXaNbViCALqy9Z6unfifpp8ybSgkngzjYxGLypQF8d1ol3Og1EbnTKuknbj7GvnWosEJB00T6xe6CeO); // <--- CHANGE THIS IN STEP 12
+    const stripe = Stripe('pk_test_...'); // <--- PASTE YOUR REAL PK
     const form = document.getElementById('w9form');
     form.addEventListener('submit', async (e)=>{
       e.preventDefault();
