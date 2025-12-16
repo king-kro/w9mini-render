@@ -9,7 +9,7 @@ app = Flask(__name__)
 OPENAI_KEY = os.getenv("OPENAI_KEY")
 PDFCO_KEY = os.getenv("PDFCO_KEY")
 STRIPE_SECRET = os.getenv("STRIPE_SECRET")
-PRICE_ID = price_1SezD3QqfvtCQZDRvXvitWNi  # <-- CHANGE THIS TO YOUR REAL PRICE ID
+PRICE_ID = "price_1SezD3QqfvtCQZDRvXvitWNi"  # <-- CHANGE THIS TO YOUR REAL PRICE ID
 
 # Initialize Stripe once at startup
 stripe.api_key = STRIPE_SECRET
