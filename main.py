@@ -10,7 +10,7 @@ OPENAI_KEY = os.environ.get("OPENAI_KEY")
 PDFCO_KEY = os.environ.get("PDFCO_KEY")
 STRIPE_SECRET = os.environ.get("STRIPE_SECRET")
 STRIPE_PUBLISHABLE = os.environ.get("STRIPE_PUBLISHABLE")
-PRICE_ID = os.environ.get("PRICE_ID")  # <-- Now loaded from env
+PRICE_ID = "price_1SezD3QqfvtCQZDRvXvitWNi"  # REPLACE with your real one
 
 # Initialize Stripe
 stripe.api_key = STRIPE_SECRET
